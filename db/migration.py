@@ -42,15 +42,15 @@ for i in range(4):
     db.commit()
 
     q = 'Q' + s
-    db.execute("INSERT INTO cards VALUES(null, '" + q + "', '11', '" + i + "')")
+    db.execute("INSERT INTO cards VALUES(null, '" + q + "', '12', '" + i + "')")
     db.commit()
 
     q = 'K' + s
-    db.execute("INSERT INTO cards VALUES(null, '" + q + "', '11', '" + i + "')")
+    db.execute("INSERT INTO cards VALUES(null, '" + q + "', '13', '" + i + "')")
     db.commit()
 
     q = 'A' + s
-    db.execute("INSERT INTO cards VALUES(null, '" + q + "', '11', '" + i + "')")
+    db.execute("INSERT INTO cards VALUES(null, '" + q + "', '14', '" + i + "')")
     db.commit()
 
 
