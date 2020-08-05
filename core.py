@@ -19,13 +19,13 @@ class Game():
         for i in range(10):
             if i < 5:
                 picked = random.choice(self.cards)
-                picked_card = picked[0]
+                picked_card = picked[1]
 
                 self.robotcards.append(picked_card) 
                 self.cards.remove(picked)
             else:
                 picked = random.choice(self.cards)
-                picked_card = picked[0]
+                picked_card = picked[1]
 
                 self.playercards.append(picked_card) 
                 self.cards.remove(picked)

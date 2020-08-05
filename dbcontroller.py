@@ -12,4 +12,4 @@ class DBController():
         self.db = sqlite3.connect(self.dbname)
 
     def getAllCards(self):
-        return self.db.execute("SELECT name FROM cards").fetchall()
+        return self.db.execute("SELECT * FROM cards").fetchall()
