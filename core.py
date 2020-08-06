@@ -8,11 +8,11 @@ class Game():
     blocked = []
     dbcontroller = ""
 
-    """""def __init__(self):
+    def __init__(self):
         print('Введи 1 чтобы начать игру')
         f = input()
         if(f == "1"):
-            self.gameStart()"""""
+            self.gameStart()
 
     def gameStart(self):
         self.getCards()
@@ -74,11 +74,11 @@ class Game():
         r_s = max(r_s_arr)
 
         if p_s > r_s:
-            return 'player'
+            return 'У игрока старшая карта'
         elif r_s > p_s:
-            return 'robot'
+            return 'У соперника старшая карта'
         else:
-            return 'both'
+            return 'Ничья'
 
     def pairs(self):
 
@@ -193,16 +193,16 @@ class Game():
 
 
         if p_amount > r_amount:
-            return 'У игрока 2 пары ' + str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+            return 'Игрок'
         elif r_amount > p_amount:
-            return 'У соперника 2 пары ' + str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+            return 'Соперник'
         elif r_amount == p_amount != 0:
             if player_pair > robot_pair and player_pair > 0:
-                return 'player '+ str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+                return 'Игрок'
             elif robot_pair > player_pair and robot_pair > 0:
-                return 'robot '+ str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+                return 'Соперник'
             else:
-                return 'both '+ str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+                return 'Ничья'
         elif r_amount == p_amount == 0:
             return False
 
