@@ -8,14 +8,29 @@ class Game():
     blocked = []
     dbcontroller = ""
 
-    def __init__(self):
+    """""def __init__(self):
         print('Введи 1 чтобы начать игру')
         f = input()
         if(f == "1"):
-            self.gameStart()
+            self.gameStart()"""""
 
     def gameStart(self):
         self.getCards()
+
+        self.giveCards()
+        
+        print("Твои карты")
+        for card in self.playercards:
+            print(card[1])
+
+        print("Карты твоего оппонента")
+        for card in self.robotcards:
+            print(card[1])
+
+        self.findWinner()
+
+
+    def giveCards(self):
         for i in range(10):
             if i < 5:
                 picked = random.choice(self.cards)
@@ -30,16 +45,6 @@ class Game():
                 self.playercards.append(picked) 
                 self.cards.remove(picked)
 
-        print("Твои карты")
-        for card in self.playercards:
-            print(card[1])
-
-        print("Карты твоего оппонента")
-        for card in self.robotcards:
-            print(card[1])
-
-        self.findWinner()
-
 
     def getCards(self):
         self.dbcontroller = dbcontroller.DBController('db/cards.sqlite3')
@@ -47,8 +52,8 @@ class Game():
 
     def findWinner(self):
         winner = self.highest()
-        pairs = self.pair()
-        if pairs != 0:
+        pairs = self.pairs()
+        if pairs != False:
             winner = pairs
 
         print(winner)
@@ -75,36 +80,134 @@ class Game():
         else:
             return 'both'
 
-    def pair(self):
+    def pairs(self):
+
+        # Strength of the highest player's pair
+
         player_pair = 0
+
+        # Amount of pairs of the player
+
+        p_amount = 0
+
+        # Already used cards of the player
+
+        p_paired = []
+
+        # The same for Robot
+
         robot_pair = 0
 
-        for card in self.playercards:
-            for i in range(5):
-                if card[2] == self.playercards[i][2] and card[1] != self.playercards[i][1]:
-                    if card[2] > player_pair:
-                        player_pair = card[2]
-                        break
+        r_amount = 0
 
-        for card in self.robotcards:
-            if robot_pair != 0:
-                break
-            for i in range(5):
-                if card[2] == self.robotcards[i][2] and card[1] != self.robotcards[i][1]:
-                    if card[2] > player_pair:
-                        robot_pair = card[2]
-                        break
+        r_paired = []
 
         
-        if player_pair > robot_pair and player_pair > 0:
-            return 'player'
-        if robot_pair > player_pair and robot_pair > 0:
-            return 'robot'
-        if robot_pair == player_pair and player_pair == 0:
-            return 0
-        else:
-            return 'both'
+        for card in self.playercards:
+            paired_check = False
+            checkpass = False
 
+            for i in range(5):
+                if paired_check == True:
+                    break
+
+                if card[2] == self.playercards[i][2] and card[1] != self.playercards[i][1]:
+
+                        for paired in p_paired:
+                            if card[1] != paired and self.playercards[i][1] != paired:
+                                checkpass = True
+                            else:
+                                checkpass = False
+                                break
+                        else:
+                            checkpass = True
+
+                        if checkpass != True:
+                            break
+
+                        if p_amount == 0:
+                            p_amount += 1
+                            player_pair = int(card[2])
+                            p_paired.append(card[1])
+                            p_paired.append(self.playercards[i][1])
+                            
+                            paired_check = True
+                            break
+                        elif p_amount == 1:
+                            p_amount += 1
+                            p_paired.append(card[1])
+                            p_paired.append(self.playercards[i][1])
+
+                            if card[2] > player_pair:
+                                player_pair = int(card[2])
+                                paired_check = True
+                                break
+                            else:
+                                paired_check = True
+                                break
+
+        
+            for card in self.robotcards:
+                paired_check = False
+                checkpass = False
+
+                for i in range(5):
+                    if paired_check == True:
+                        break
+
+                    if card[2] == self.robotcards[i][2] and card[1] != self.robotcards[i][1]:
+
+                            for paired in r_paired:
+                                if card[1] != paired and self.robotcards[i][1] != paired:
+                                    checkpass = True
+                                else:
+                                    checkpass = False
+                                    break
+                            else:
+                                checkpass = True
+
+                            if checkpass != True:
+                                break
+
+                            if r_amount == 0:
+                                r_amount += 1
+                                robot_pair = int(card[2])
+                                r_paired.append(card[1])
+                                r_paired.append(self.playercards[i][1])
+                                
+                                paired_check = True
+                                break
+                            elif r_amount == 1:
+                                r_amount += 1
+                                r_paired.append(card[1])
+                                r_paired.append(self.playercards[i][1])
+
+                                if card[2] > robot_pair:
+                                    robot_pair = int(card[2])
+                                    paired_check = True
+                                    break
+                                else:
+                                    paired_check = True
+                                    break
+
+
+
+        if p_amount > r_amount:
+            return 'У игрока 2 пары ' + str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+        elif r_amount > p_amount:
+            return 'У соперника 2 пары ' + str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+        elif r_amount == p_amount != 0:
+            if player_pair > robot_pair and player_pair > 0:
+                return 'player '+ str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+            elif robot_pair > player_pair and robot_pair > 0:
+                return 'robot '+ str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+            else:
+                return 'both '+ str(p_amount) + " " + str(r_amount) + " " + p_paired[0] + " " + p_paired[1]
+        elif r_amount == p_amount == 0:
+            return False
+
+        
+        
 
 
 
